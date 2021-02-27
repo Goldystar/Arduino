@@ -1,0 +1,36 @@
+// For only nano
+const int ledPin =  9;// the number of the LED pin
+const byte LED = 11;  // Timer 2 "A" output: OC2A // 10 for mega
+int ledState = LOW;             // ledState used to set the LED
+
+unsigned long previousMillis = 0;        // will store last time LED was updated
+const long interval = 1000;           // interval at which to blink (milliseconds)
+
+void setup() {
+  pinMode (LED, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+  // set up Timer 2
+  TCCR2A = _BV (COM2A0) | _BV(WGM21);  // CTC, toggle OC2A on Compare Match
+  TCCR2B = _BV (CS20);   // No prescaler
+  OCR2A =  40;           // http://eleccelerator.com/avr-timer-calculator/  200kHz
+
+}
+
+void loop() {
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - previousMillis >= interval) {
+    // save the last time you blinked the LED
+    previousMillis = currentMillis;
+
+    // if the LED is off turn it on and vice-versa:
+    if (ledState == LOW) {
+      ledState = HIGH;
+    } else {
+      ledState = LOW;
+    }
+
+    // set the LED with the ledState of the variable:
+    digitalWrite(ledPin, ledState);
+  }
+}
